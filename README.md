@@ -1,4 +1,4 @@
-# eletric_vehicle-API
+# electric_vehicle-API
 
 # 🚗 Autonomous Vehicle Telemetry API
 
