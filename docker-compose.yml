@@ -1,0 +1,37 @@
+services:
+
+  api:
+
+    build: .
+
+    image: autonomous-api:v1
+    
+    container_name: telemetry_api
+
+    ports:
+      - "8000:8000"
+
+    env_file:
+      - .env
+
+    depends_on:
+      - mongodb
+
+  mongodb:
+
+    image: mongo:7
+
+    container_name: telemetry_mongodb
+
+    ports:
+      - "27018:27017"
+
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
