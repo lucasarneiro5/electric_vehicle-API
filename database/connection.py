@@ -1,7 +1,6 @@
 import os
-
-from dotenv import load_dotenv, find_dotenv
 from pymongo import MongoClient
+from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
 
@@ -11,15 +10,15 @@ MONGO_HOST = os.getenv("MONGO_HOST")
 MONGO_PORT = os.getenv("MONGO_PORT")
 MONGO_DATABASE = os.getenv("MONGO_DATABASE")
 
-MONGO_URI = (
-    f"mongodb://{MONGO_USER}:{MONGO_PASSWORD}"
-    f"@{MONGO_HOST}:{MONGO_PORT}/admin"
-)
+MONGO_URI = f"mongodb://{MONGO_USER}:{MONGO_PASSWORD}@{MONGO_HOST}:{MONGO_PORT}/admin"
 
-client = MongoClient(MONGO_URI)
+client = None
+db = None
 
-client.admin.command("ping")
-
-db = client[MONGO_DATABASE]
-
-print(f"Conectando em: {MONGO_HOST}:{MONGO_PORT}")
+try:
+    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=3000)
+    client.admin.command("ping")
+    db = client[MONGO_DATABASE]
+    print("Mongo conectado")
+except Exception as e:
+    print("Mongo indisponível (API continua rodando):", e)
