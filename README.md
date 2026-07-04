@@ -1,79 +1,98 @@
-# electric_vehicle-API
+# 🚗 Electric Vehicle Telemetry API
 
-# 🚗 Autonomous Vehicle Telemetry API
+API REST desenvolvida em Python para simular a geração, armazenamento e disponibilização de dados de telemetria de veículos elétricos.
 
-API desenvolvida em Python para simular a geração e disponibilização de dados de telemetria de veículos elétricos/autônomos.
-
-O projeto tem como objetivo demonstrar conceitos de desenvolvimento de APIs REST, bancos de dados NoSQL, containers Docker e computação em nuvem utilizando serviços da AWS.
+O projeto demonstra conceitos de desenvolvimento de APIs REST, bancos de dados NoSQL, conteinerização com Docker e implantação em ambiente cloud utilizando serviços da Amazon Web Services (AWS).
 
 ---
 
 # 📋 Visão Geral
 
-Empresas que operam frotas de veículos elétricos e autônomos precisam monitorar continuamente informações como:
+Empresas que operam frotas de veículos elétricos precisam monitorar continuamente informações provenientes dos sensores embarcados para acompanhar o desempenho dos veículos e auxiliar na tomada de decisão.
 
-* Nível de bateria
-* Velocidade do veículo
-* Localização GPS
-* Data e hora da coleta
+Esta aplicação simula a geração desses dados de telemetria, armazena as informações em um banco MongoDB e disponibiliza consultas através de uma API REST.
 
-Esta aplicação simula a geração desses dados e os disponibiliza através de uma API REST para consulta e análise.
+Os dados simulados incluem:
 
----
-
-# 🎯 Objetivos do Projeto
-
-* Simular dados de telemetria de veículos autônomos.
-* Armazenar informações em banco NoSQL (MongoDB).
-* Disponibilizar os dados através de uma API REST.
-* Containerizar a aplicação utilizando Docker.
-* Preparar a solução para implantação na AWS utilizando Amazon ECS.
+- 🔋 Nível de bateria
+- 🚗 Velocidade
+- 🌡️ Temperatura
+- 📍 Localização GPS
+- 🕒 Data e hora da coleta
 
 ---
 
-# 🏗 Arquitetura da Solução
+# 🎯 Objetivos
+
+- Simular dados de telemetria de veículos elétricos.
+- Armazenar informações em banco NoSQL (MongoDB).
+- Disponibilizar os dados através de uma API REST utilizando FastAPI.
+- Containerizar toda a aplicação utilizando Docker.
+- Implantar a solução utilizando Amazon ECS Fargate.
+- Publicar a API através de um Application Load Balancer (ALB).
+
+---
+
+# 🏗 Arquitetura
+
+### Ambiente Local
 
 ```text
-┌─────────────────────┐
-│      Cliente        │
-│ Swagger / Browser   │
-└──────────┬──────────┘
-           │ HTTP
-           ▼
-┌─────────────────────┐
-│      FastAPI        │
-│  Container Docker   │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│      MongoDB        │
-│  Container Docker   │
-└─────────────────────┘
+Cliente
+    │
+    ▼
+FastAPI (Docker)
+    │
+    ▼
+MongoDB (Docker)
 ```
 
-Arquitetura futura na AWS:
+### Ambiente AWS
 
 ```text
-Amazon ECS
-│
-├── Container FastAPI
-│
-└── Container MongoDB
+Cliente
+    │
+    ▼
+Application Load Balancer
+    │
+    ▼
+Amazon ECS (Fargate)
+    │
+    ├── Container FastAPI
+    │
+    └── Container MongoDB
 ```
+
+---
+
+# ☁️ Arquitetura AWS
+
+A solução foi implantada utilizando os seguintes serviços:
+
+- Amazon ECS Fargate
+- Application Load Balancer
+- Docker Hub
+- Amazon VPC
+- Security Groups
+- Target Groups
+- MongoDB
+- Docker
 
 ---
 
 # 🛠 Tecnologias Utilizadas
 
-* Python 3.13
-* FastAPI
-* MongoDB
-* PyMongo
-* Docker
-* Docker Compose
-* AWS ECS (planejado)
-* Amazon ECR (planejado)
+- Python 3.13
+- FastAPI
+- Uvicorn
+- MongoDB
+- PyMongo
+- Pydantic
+- Docker
+- Docker Compose
+- Amazon ECS (Fargate)
+- Application Load Balancer
+- Docker Hub
 
 ---
 
@@ -98,10 +117,9 @@ autonomous-api/
 ├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
-├── .env
 ├── .dockerignore
+├── .env
 ├── main.py
-│
 └── README.md
 ```
 
@@ -112,16 +130,16 @@ autonomous-api/
 ## Clonar o projeto
 
 ```bash
-git clone https://github.com/seu-usuario/autonomous-api.git
+git clone https://github.com/SEU-USUARIO/electric-vehicle-api.git
 
-cd autonomous-api
+cd electric-vehicle-api
 ```
 
 ---
 
 ## Configurar variáveis de ambiente
 
-Criar arquivo `.env`
+Criar um arquivo `.env`
 
 ```env
 MONGO_HOST=mongodb
@@ -135,13 +153,13 @@ MONGO_DATABASE=telemetry_db
 
 ---
 
-## Subir a aplicação
+## Subir os containers
 
 ```bash
 docker compose up --build -d
 ```
 
-Verificar containers:
+Verificar:
 
 ```bash
 docker ps
@@ -151,17 +169,15 @@ docker ps
 
 # 📖 Documentação da API
 
-Após iniciar a aplicação:
+Swagger
 
-Swagger:
-
-```text
+```
 http://localhost:8000/docs
 ```
 
-OpenAPI:
+OpenAPI
 
-```text
+```
 http://localhost:8000/openapi.json
 ```
 
@@ -175,7 +191,7 @@ http://localhost:8000/openapi.json
 GET /health
 ```
 
-Retorno:
+Retorno
 
 ```json
 {
@@ -185,88 +201,78 @@ Retorno:
 
 ---
 
-## Gerar Telemetria
+## Gerar nova telemetria
 
 ```http
-POST /telemetria
+POST /telemetry/generate
 ```
 
-Retorno:
+Retorno
 
 ```json
 {
-  "mensagem": "Telemetria salva",
-  "id": "687123abc456"
+  "message": "Telemetry generated successfully",
+  "id": "6876..."
 }
 ```
 
 ---
 
-## Listar Telemetrias
+## Listar telemetrias
 
 ```http
-GET /telemetria
+GET /telemetry
 ```
 
-Retorno:
+---
+
+## Consultar última telemetria
+
+```http
+GET /telemetry/latest
+```
+
+---
+
+## Buscar telemetria por ID
+
+```http
+GET /telemetry/{id}
+```
+
+---
+
+# 📊 Exemplo de Telemetria
 
 ```json
-[
-  {
-    "_id": "687123abc456",
-    "bateria": 92,
-    "velocidade": 64.5,
+{
+    "battery": 91,
+    "speed": 67.8,
+    "temperature": 31.2,
     "gps": {
-      "latitude": -21.764,
-      "longitude": -43.350
+        "latitude": -23.5489,
+        "longitude": -46.6388
     },
-    "data_hora": "2026-06-21T14:00:00"
-  }
-]
-```
-
----
-
-## Buscar Telemetria por ID
-
-```http
-GET /telemetria/{id}
-```
-
----
-
-# 🧪 Exemplo de Dados Gerados
-
-```json
-{
-  "bateria": 87,
-  "velocidade": 58.3,
-  "gps": {
-    "latitude": -21.764321,
-    "longitude": -43.352187
-  },
-  "data_hora": "2026-06-21T14:30:00"
+    "timestamp": "2026-06-27T19:25:40Z"
 }
 ```
 
 ---
 
-# 🐳 Containers Docker
+# 🐳 Containers
 
-A aplicação utiliza dois containers:
-
-| Container         | Função        |
-| ----------------- | ------------- |
-| telemetry_api     | API FastAPI   |
+| Container | Descrição |
+|------------|-----------|
+| telemetry_api | API FastAPI |
 | telemetry_mongodb | Banco MongoDB |
 
-Verificar:
+Verificar execução:
 
 ```bash
 docker ps
 ```
 
-Logs:
+Visualizar logs
 
 ```bash
 docker logs telemetry_api
@@ -276,36 +282,63 @@ docker logs telemetry_mongodb
 
 ---
 
-# ☁️ Evolução para AWS
+# ☁️ Implantação na AWS
 
-Próximas etapas previstas:
+A aplicação foi implantada utilizando:
 
-* Publicação da imagem no Amazon ECR.
-* Implantação dos containers no Amazon ECS.
-* Configuração de CI/CD.
-* Health Checks avançados.
-* Monitoramento com CloudWatch.
-* Auto Scaling.
+- Amazon ECS Fargate
+- Application Load Balancer
+- Amazon VPC
+- Security Groups
+- Target Groups
+- Docker Hub
+
+Após a implantação, a API ficou disponível através do Load Balancer.
+
+Exemplo:
+
+```
+http://<application-load-balancer>/docs
+```
 
 ---
 
 # 📚 Conceitos Demonstrados
 
-* APIs REST
-* Arquitetura em Microsserviços
-* Banco NoSQL
-* Docker
-* Containerização
-* Computação em Nuvem
-* AWS ECS
-* Amazon ECR
-* Observabilidade
-* Boas práticas de desenvolvimento
+- APIs REST
+- FastAPI
+- Docker
+- Docker Compose
+- MongoDB
+- Banco NoSQL
+- Arquitetura em Containers
+- Amazon ECS Fargate
+- Application Load Balancer
+- VPC
+- Security Groups
+- Target Groups
+- Deploy em Cloud
+- Arquitetura Escalável
+
+---
+
+# 🚀 Melhorias Futuras
+
+- Autenticação JWT
+- HTTPS com AWS Certificate Manager
+- Integração com Amazon ECR
+- CI/CD utilizando GitHub Actions
+- Monitoramento com Amazon CloudWatch
+- Auto Scaling no Amazon ECS
+- Integração com sensores IoT reais
+- Migração para Amazon DocumentDB
 
 ---
 
 # 👨‍💻 Autor
 
-Lucas Arneiro
+**Lucas Arneiro**
 
-Engenheiro Mecatrônico | Pós-graduado em Engenharia de Software | Desenvolvedor Python, Automação e Dados.
+Engenheiro Mecatrônico • Pós-graduado em Engenharia de Software
+
+Python | Cloud | Docker | AWS | APIs REST | Automação | Dados
